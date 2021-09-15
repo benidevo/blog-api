@@ -4,12 +4,15 @@
   "description": "A Simple Blog RESTFul API",
   "main": "server.js",
   "scripts": {
+    "server": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Benjamin Idewor",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "config": "^3.3.6",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-validator": "^6.12.1",
     "jsonwebtoken": "^8.5.1",

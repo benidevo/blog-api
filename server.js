@@ -20,5 +20,8 @@ app.get('/', (req, res) => {
     res.json({ "message": "Welcome to Blog-API" })
 });
 
-const PORT = process.env.PORT || 3500;
+// routes
+app.use('/api/auth', require('./routes/users'));
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`))

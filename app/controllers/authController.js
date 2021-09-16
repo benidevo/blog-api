@@ -1,9 +1,10 @@
-const { success, error, validation } = require('../utils/apiResponse');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 require('dotenv').config();
+
+const { success, error, validation } = require('../utils/apiResponse');
+const User = require('../models/User');
 
 // @desc       Register a new user
 // @method     POST
@@ -45,7 +46,7 @@ exports.register = async (req, res) => {
             { expiresIn: '1h' }
             );
         } catch (err) {
-            console.log(err)
+            console.log(err.message);
             return res.status(500).json(error(
             'Registration failed, please try again later'));
         }
@@ -60,6 +61,7 @@ exports.register = async (req, res) => {
         res.status(500).json(error('Internal server error'));
     }
 };
+
 
 // @desc       Authenticate user
 // @method     POST
@@ -77,7 +79,7 @@ exports.login = async (req, res) => {
     try {
         user = await User.findOne({ email });
     } catch (err) {
-        console.log(err);
+        console.log(err.message);
         return res.status(500).json(error('Internal server error'));
     }
 
@@ -93,7 +95,7 @@ exports.login = async (req, res) => {
     }
 
     if (!isValidPassword) {
-        res.status(403).json(error('Invalid password'));
+        res.status(401).json(error('Invalid password'));
     };
 
     // generate token
@@ -108,12 +110,13 @@ exports.login = async (req, res) => {
         return res.status(500).json('Internal Server error');
     }
 
-    res.status(200).json(success('Login successful', {
+    return res.status(200).json(success('Login successful', {
         userId: user._id,
         email: user.email,
         token: token
     }));
 };
+
 
 // @desc       Reset user's password
 // @method     POST
@@ -131,7 +134,7 @@ exports.changePassword = async (req, res) => {
     try {
         user = await User.findOne({ email });
     } catch (err) {
-        console.log(err);
+        console.log(err.message);
         return res.status(500).json(error('Internal server error'));
     }
     
@@ -143,12 +146,12 @@ exports.changePassword = async (req, res) => {
     try {
         isValidPassword = await bcrypt.compare(oldPassword, user.password);
     } catch (err) {
-        console.log(err)
+        console.log(err.message)
         return res.status(500).json(error('Internal server error'))
     }
 
     if (!isValidPassword) {
-        return res.status(403).json(error('Invalid password'));
+        return res.status(401).json(error('Invalid password'));
     }
 
     // hash new password

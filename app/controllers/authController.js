@@ -104,7 +104,7 @@ exports.login = async (req, res) => {
         token = jwt.sign(
             { userId: user._id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '2h' }
         );
     } catch (err) {
         return res.status(500).json('Internal Server error');
@@ -118,7 +118,7 @@ exports.login = async (req, res) => {
 };
 
 
-// @desc       Reset user's password
+// @desc       Change user's password
 // @method     POST
 // @access     Public
 exports.changePassword = async (req, res) => {

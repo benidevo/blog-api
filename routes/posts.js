@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const app = express()
 
-const { createPostValidation } = require('../app/middlewares/posts');
-const { createCommentsValidation } = require('../app/middlewares/comments');
+const { createPostValidation, updatePostValidation } = require('../app/middlewares/posts');
+const { createCommentsValidation, updateCommentsValidation } = require('../app/middlewares/comments');
 const { createPost, updatePost, retrievePost, deletePost, retrieveAllPosts } = require('../app/controllers/postControllers');
 const { addCommentToPost, updateCommentOnPost, getAllCommentOnPost, retrieveSingleComment, deleteCommentOnPost } = require('../app/controllers/commentControllers');
 const { auth } = require('../app/middlewares/auth');
@@ -14,7 +15,7 @@ router.post('/', [auth, createPostValidation], createPost);
 router.post('/:blogId/comments', createCommentsValidation, addCommentToPost);
 
 // update comment on a blog post
-router.put('/:blogId/comments/:commentId', updateCommentOnPost);
+router.put('/:blogId/comments/:commentId', updateCommentsValidation, updateCommentOnPost);
 
 // delete comment on a blog post
 router.delete('/:blogId/comments/:commentId', deleteCommentOnPost);
@@ -26,10 +27,10 @@ router.get('/:blogId/comments/:commentId', retrieveSingleComment);
 router.get('/:blogId/comments', getAllCommentOnPost);
 
 // retrieve all blog posts
-router.get('/', auth, retrieveAllPosts);
+router.get('/', retrieveAllPosts);
 
 // update blog post
-router.put('/:blogId', [auth, createPostValidation], updatePost);
+router.put('/:blogId', [auth, updatePostValidation], updatePost);
 
 // retrieve blog post
 router.get('/:blogId', auth, retrievePost);

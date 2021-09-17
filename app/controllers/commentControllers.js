@@ -53,7 +53,14 @@ exports.addCommentToPost = async (req, res) => {
     newComment.post = post._id
     await newComment.save();
 
-    return res.status(201).json(success('Successfully commented on blog post', newComment));
+    const result = newComment.toObject({
+		versionKey: false, transform: function (doc, ret) {
+			ret.id = ret._id;
+			delete ret._id;
+		}
+	});
+    
+    return res.status(201).json(success('Successfully commented on blog post', result));
 };
 
 
@@ -61,6 +68,12 @@ exports.addCommentToPost = async (req, res) => {
 // @method     PUT
 // @access     Public
 exports.updateCommentOnPost = async (req, res) => {
+    // validation
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(422).json(validation(errors.array()));
+    };
+    
     // find post
     let post;
     try {
@@ -69,7 +82,7 @@ exports.updateCommentOnPost = async (req, res) => {
         console.log(err.message);
         return res.status(500).json(error('Internal server error'));
     }
-
+    
     if (!post) {
         return res.status(404).json(error('Blog post with the provided ID does not exist'));
     };
@@ -77,7 +90,7 @@ exports.updateCommentOnPost = async (req, res) => {
     // find and update comment
     let existingComment;
     try {
-        existingComment = await Comment.findById(req.params.commentId).select('-__v');
+        existingComment = await Comment.findById(req.params.commentId);
     } catch (err) {
         console.log(err.message);
         return res.status(500).json(error('Internal Server error'));
@@ -88,12 +101,20 @@ exports.updateCommentOnPost = async (req, res) => {
     };
     
     const { author, comment } = req.body;
+
     if (author) { existingComment.author = author };
     if (comment) { existingComment.comment = comment };
     existingComment.updatedAt = Date.now();
     await existingComment.save();
     
-    return res.status(200).json(success('Successfully updated comment', existingComment));
+    const result = existingComment.toObject({
+        versionKey: false, transform: function (doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+        }
+    });
+    
+    return res.status(200).json(success('Successfully updated comment', result));
 };
 
 
@@ -104,7 +125,7 @@ exports.getAllCommentOnPost = async (req, res) => {
     // find post
     let post;
     try {
-        post = await Post.findById(req.params.blogId).populate('comments', '-__v');
+        post = await Post.findById(req.params.blogId).populate('comments', '-__v, -post');
     } catch (err) {
         console.log(err.message);
         return res.status(500).json(error('Internal Server error')); 
@@ -114,9 +135,15 @@ exports.getAllCommentOnPost = async (req, res) => {
         return res.status(404).json(error('Post with the provided ID does not exist'));
     };
     
-    const data = post.comments;
+    const comments = post.comments;
+    const result = comments.map(comment => comment.toObject({
+        versionKey: false, transform: function (doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+        }
+    }));
     
-    return res.status(200).json(success('Successfully retrieved all comments', data))
+    return res.status(200).json(success('Successfully retrieved all comments', result))
 };
 
 
@@ -127,7 +154,7 @@ exports.retrieveSingleComment = async (req, res) => {
     // find post
     let post;
     try {
-        post = await Post.findById(req.params.blogId).populate('comments', '-__v');
+        post = await Post.findById(req.params.blogId);
     } catch (err) {
         console.log(err.message);
         return res.status(500).json(error('Internal server error'));
@@ -140,7 +167,7 @@ exports.retrieveSingleComment = async (req, res) => {
     // find comment and retrieve comment
     let comment;
     try {
-        comment = await Comment.findById(req.params.commentId);
+        comment = await Comment.findById(req.params.commentId).select('-post');
     } catch (err) {
         console.log(err.message);
         return res.status(500).json(error('Internal Server error')); 
@@ -150,12 +177,18 @@ exports.retrieveSingleComment = async (req, res) => {
         return res.status(404).json(error('Comment with the provided ID does not exist'));
     };
     
-    return res.status(200).json(success('Successfully retrieved comment', comment));
+    const result = comment.toObject({
+        versionKey: false, transform: function (doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+        }
+    });
+    return res.status(200).json(success('Successfully retrieved comment', result));
 };
 
 
-// @desc       Retrieve single comment on a blog post
-// @method     GET
+// @desc       delete a comment on a blog post
+// @method     DELETE
 // @access     Public
 exports.deleteCommentOnPost = async (req, res) => {
      // find post

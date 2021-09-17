@@ -9,40 +9,46 @@ const User = require('../models/User');
 // @method     POST
 // @access     Private
 exports.createPost = async (req, res) => {
-  // validation
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json(validation(errors.array()));
-  };
+  	// validation
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(422).json(validation(errors.array()));
+	};
+	let user;
+	try {
+		user = await User.findById(req.user.userId);
+	} catch (err) {
+		console.log(err.message);
+		return res.status(500).json(error('Internal server error'));
+	};
 
-  try {
-    user = await User.findById(req.user.userId)
-  } catch (err) {
-    console.log(err.message)
-    return res.status(500).json(error('Internal server error'));
-  }
+	if (!user) {
+		return res.status(401).json(error('Authentication details required'));
+	};
 
-  if (!user) {
-    return res.status(401).json(error('Authentication details required'))
-  }
-
-  const { title, body } = req.body;
+	const { title, body } = req.body;
 
   // create blog post
-  const post = new Post({
-    title,
-    body,
-    author: req.user.userId
-  });
+	const post = new Post({
+		title,
+		body,
+		author: req.user.name
+	});
 
-  try {
-	  await post.save();
-  } catch (err) {
-    console.log(err.message);
-    return res.status(500).json(error('Internal server error'));
-  }
-
-  return res.status(201).json(success('Successfully created blog post', post))
+	try {
+		await post.save();
+	} catch (err) {
+		console.log(err.message);
+		return res.status(500).json(error('Internal server error'));
+	};
+	
+	const result = post.toObject({
+		versionKey: false, transform: function (doc, ret) {
+			ret.id = ret._id;
+			delete ret._id;
+		}
+	});
+	return res.status(201).json(success('Successfully created blog post', result));
 };
 
 // @desc       Update a new blog post
@@ -58,7 +64,7 @@ exports.updatePost = async (req, res) => {
 		// retrieve post
 		let post;
 		try {
-			post = await Post.findById(req.params.id);
+			post = await Post.findById(req.params.blogId);
 		} catch (err) {
 			console.log(err.message);
 			return res.status(500).json(error('Internal server error'));
@@ -86,7 +92,7 @@ exports.retrievePost = async (req, res) => {
 	// retrieve post
 	let post;
 	try {
-		post = await Post.findById(req.params.id);
+		post = await Post.findById(req.params.blogId).populate('comments', '-__V');
 	} catch (err) {
 		console.log(err.message);
 		return res.status(500).json(error('Internal server error'));
@@ -107,7 +113,7 @@ exports.retrieveAllPosts = async (req, res) => {
 	// retrieve all posts
 	let posts;
 	try {
-		posts = await Post.find();
+		posts = await Post.find().select('-__v').populate('comments', '-__v');
 	} catch (err) {
 		console.log(err.message);
 		return res.status(500).json(error('Internal server error'));
@@ -124,7 +130,7 @@ exports.deletePost = async (req, res) => {
 	// retrieve post
 	let post;
 	try {
-		post = await Post.findById(req.params.id);
+		post = await Post.findById(req.params.blogId);
 	} catch (err) {
 		console.log(err.message);
 		return res.status(500).json(error('Internal server error'));

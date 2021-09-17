@@ -41,7 +41,7 @@ exports.register = async (req, res) => {
         let token;
         try {
             token = jwt.sign(
-            { userId: newUser.id, email: newUser.email },
+            { userId: newUser.id, email: newUser.email, name: newUser.name },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
             );

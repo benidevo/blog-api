@@ -1,6 +1,8 @@
+const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const app = express()
 const DB = process.env.MONGO_URI;
  
 const connectDB = async () => {
@@ -9,7 +11,7 @@ const connectDB = async () => {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
-        console.log('Connected to MongoDB')
+        console.log('Connected to MongoDB');
     } catch (error) {
         console.log(error.message);
         process.exit(1);

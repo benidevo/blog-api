@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
 
+const Comment = require('./Comment');
+
 const PostSchema = mongoose.Schema({
   author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    type: String,
+    require: true,
+    maxLength: 150,
   },
   title: {
     type: String,
@@ -23,8 +26,16 @@ const PostSchema = mongoose.Schema({
     default: Date.now,
   },
   updatedAt: {
-    type: Date
+    type: Date,
+    default: Date.now,
   }
+});
+
+PostSchema.pre('remove', async function(next) {
+    // 'this' is the client being removed. Provide callbacks here if you want
+    // to be notified of the calls' result.
+    await Comment.remove({post: this._id}).exec();
+    next();
 });
 
 module.exports = mongoose.model('Post', PostSchema);

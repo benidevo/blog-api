@@ -18,7 +18,7 @@ exports.loginValidation = [
 exports.changePasswordValidation = [
 	check('email', 'Provide a valid email address').isEmail().normalizeEmail().escape().not().isEmpty(),
 	check('oldPassword', 'Provide a password of 6 or more characters').isLength({ min: 6 }).escape().not().isEmpty(),
-	check('password', 'Provide a password of 6 or more characters').isLength({ min: 6 }).escape().not().isEmpty(),
+	check('newPassword', 'Provide a password of 6 or more characters').isLength({ min: 6 }).escape().not().isEmpty(),
 ];
 
 exports.auth = (req, res, next) => {

@@ -34,7 +34,7 @@ const PostSchema = mongoose.Schema({
 PostSchema.pre('remove', async function(next) {
     // 'this' is the client being removed. Provide callbacks here if you want
     // to be notified of the calls' result.
-    await Comment.remove({post: this._id}).exec();
+    await Comment.deleteOne({post: this._id}).exec();
     next();
 });
 

@@ -33,7 +33,7 @@ router.get('/', retrieveAllPosts);
 router.put('/:blogId', [auth, updatePostValidation], updatePost);
 
 // retrieve blog post
-router.get('/:blogId', auth, retrievePost);
+router.get('/:blogId', retrievePost);
 
 // delete blog post
 router.delete('/:blogId', auth, deletePost);

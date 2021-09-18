@@ -1,11 +1,19 @@
 const express = require('express');
+
 const router = express.Router();
-const app = express()
 
 const { createPostValidation, updatePostValidation } = require('../app/middlewares/posts');
 const { createCommentsValidation, updateCommentsValidation } = require('../app/middlewares/comments');
-const { createPost, updatePost, retrievePost, deletePost, retrieveAllPosts } = require('../app/controllers/postControllers');
-const { addCommentToPost, updateCommentOnPost, getAllCommentOnPost, retrieveSingleComment, deleteCommentOnPost } = require('../app/controllers/commentControllers');
+const {
+    createPost, updatePost, retrievePost, deletePost, retrieveAllPosts,
+} = require('../app/controllers/postControllers');
+const {
+    addCommentToPost,
+    updateCommentOnPost,
+    getAllCommentOnPost,
+    retrieveSingleComment,
+    deleteCommentOnPost,
+} = require('../app/controllers/commentControllers');
 const { auth } = require('../app/middlewares/auth');
 
 // create blog post

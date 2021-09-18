@@ -9,23 +9,17 @@ const app = express();
 connectDB();
 
 // init middleware
-app.use(express.json({ extended: false }))
-// app.all(function(req, res, next) {
-//   // set default or minimum is 10 (as it was prior to v0.2.0)
-//   if (req.query.limit <= 10) req.query.limit = 10;
-//   next();
-// });
+app.use(express.json({ extended: false }));
 
 app.use((req, res, next) => {
-	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-	res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE');
-	next();
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE');
+    next();
 });
 
-
 app.get('/', (req, res) => {
-	res.json(success('Welcome to Blog-API'));
+    res.json(success('Welcome to Blog-API'));
 });
 
 // routes

@@ -1,8 +1,17 @@
 const express = require('express');
+
 const router = express.Router();
 
-const { register, login, changePassword } = require('../app/controllers/authController');
-const { registrationValidation, loginValidation, changePasswordValidation } = require('../app/middlewares/auth');
+const {
+    register,
+    login,
+    changePassword,
+} = require('../app/controllers/authController');
+const {
+    registrationValidation,
+    loginValidation,
+    changePasswordValidation,
+} = require('../app/middlewares/auth');
 
 // register new users
 router.post('/register', registrationValidation, register);

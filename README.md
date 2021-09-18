@@ -135,8 +135,11 @@ The endpoints and responses are described below.
 ### Request
 
 `GET api/blog-posts`
+`GET api/blog-posts?page={number}&?limit={number}`
 
     curl -i -H 'Accept: application/json'
+
+    To take full advantage of the pagination functionality, use the following query params: page and limit.
 
 ### Response
 

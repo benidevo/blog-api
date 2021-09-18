@@ -4,35 +4,29 @@
  * @param   {string} message
  * @param   {object | array} data
  */
-exports.success = (message, data) => {
-  return {
+exports.success = (message, data) => ({
     message,
     error: false,
-    data
-  };
-};
+    data,
+});
 
 /**
  * @desc    Send any error response
  *
  * @param   {string} message
  */
-exports.error = message => {
-  return {
+exports.error = (message) => ({
     message,
-    error: true
-  };
-};
+    error: true,
+});
 
 /**
  * @desc    Send any validation response
  *
  * @param   {object | array} errors
  */
-exports.validation = (errors) => {
-  return {
-    message: "Validation errors",
+exports.validation = (errors) => ({
+    message: 'Validation errors',
     error: true,
-    errors
-  };
-};
+    errors,
+});

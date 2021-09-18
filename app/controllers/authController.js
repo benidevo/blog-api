@@ -9,24 +9,25 @@ const User = require('../models/User');
 // @desc       Register a new user
 // @method     POST
 // @access     Public
+// eslint-disable-next-line consistent-return
 exports.register = async (req, res) => {
     // validation
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json(validation(errors.array()));
-    };
+    }
 
     const { name, email, password } = req.body;
     try {
-        let user = await User.findOne({ email: email.toLowerCase() });
+        const user = await User.findOne({ email: email.toLowerCase() });
 
         if (user) {
-            return res.status(422).json(error("User with provided email already exists!"));;
-        };
+            return res.status(422).json(error('User with provided email already exists!'));
+        }
 
-        let newUser = new User({
+        const newUser = new User({
             name,
-            email: email.toLowerCase().replace(/\s+/, ""),
+            email: email.toLowerCase().replace(/\s+/, ''),
             password,
         });
 
@@ -41,27 +42,28 @@ exports.register = async (req, res) => {
         let token;
         try {
             token = jwt.sign(
-            { userId: newUser.id, email: newUser.email, name: newUser.name },
-            process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+                { userId: newUser.id, email: newUser.email, name: newUser.name },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' },
             );
         } catch (err) {
             console.log(err.message);
             return res.status(500).json(error(
-            'Registration failed, please try again later'));
+                'Registration failed, please try again later',
+            ));
         }
 
         // send response
-        res
-        .status(201)
-        .json(success('Registration successful', { userId: newUser._id, name: newUser.name, email: newUser.email, token: token }));
-    
+        return res
+            .status(201)
+            .json(success('Registration successful', {
+                userId: newUser._id, name: newUser.name, email: newUser.email, token,
+            }));
     } catch (err) {
         console.error(err.message);
         res.status(500).json(error('Internal server error'));
     }
 };
-
 
 // @desc       Authenticate user
 // @method     POST
@@ -70,8 +72,8 @@ exports.login = async (req, res) => {
     // validation
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(422).json(validation(errors.array()))
-    };
+        return res.status(422).json(validation(errors.array()));
+    }
 
     const { email, password } = req.body;
 
@@ -85,7 +87,7 @@ exports.login = async (req, res) => {
 
     if (!user) {
         return res.status(404).json(error('User does not exist'));
-    };
+    }
 
     let isValidPassword = false;
     try {
@@ -96,7 +98,7 @@ exports.login = async (req, res) => {
 
     if (!isValidPassword) {
         res.status(401).json(error('Invalid password'));
-    };
+    }
 
     // generate token
     let token;
@@ -104,7 +106,7 @@ exports.login = async (req, res) => {
         token = jwt.sign(
             { userId: user._id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: '2h' }
+            { expiresIn: '2h' },
         );
     } catch (err) {
         return res.status(500).json('Internal Server error');
@@ -113,10 +115,9 @@ exports.login = async (req, res) => {
     return res.status(200).json(success('Login successful', {
         userId: user._id,
         email: user.email,
-        token: token
+        token,
     }));
 };
-
 
 // @desc       Change user's password
 // @method     POST
@@ -126,7 +127,7 @@ exports.changePassword = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json(validation(errors.array()));
-    };
+    }
 
     const { email, oldPassword, newPassword } = req.body;
 
@@ -137,17 +138,17 @@ exports.changePassword = async (req, res) => {
         console.log(err.message);
         return res.status(500).json(error('Internal server error: cannot find email'));
     }
-    
+
     if (!user) {
         return res.status(404).json(error('User with the provided email address does not exist'));
-    };
+    }
 
     let isValidPassword = false;
     try {
         isValidPassword = await bcrypt.compare(oldPassword, user.password);
     } catch (err) {
-        console.log(err.message)
-        return res.status(500).json(error('Internal server error: cannot compare passwords'))
+        console.log(err.message);
+        return res.status(500).json(error('Internal server error: cannot compare passwords'));
     }
 
     if (!isValidPassword) {

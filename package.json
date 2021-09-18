@@ -18,6 +18,15 @@
     "express-validator": "^6.12.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.5",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "restify": "^8.5.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.1"
   }
 }

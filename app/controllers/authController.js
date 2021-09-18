@@ -80,7 +80,7 @@ exports.login = async (req, res) => {
         user = await User.findOne({ email });
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal server error'));
+        return res.status(500).json(error('Internal server error: cannot find email'));
     }
 
     if (!user) {
@@ -135,7 +135,7 @@ exports.changePassword = async (req, res) => {
         user = await User.findOne({ email });
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal server error'));
+        return res.status(500).json(error('Internal server error: cannot find email'));
     }
     
     if (!user) {
@@ -147,7 +147,7 @@ exports.changePassword = async (req, res) => {
         isValidPassword = await bcrypt.compare(oldPassword, user.password);
     } catch (err) {
         console.log(err.message)
-        return res.status(500).json(error('Internal server error'))
+        return res.status(500).json(error('Internal server error: cannot compare passwords'))
     }
 
     if (!isValidPassword) {

@@ -29,7 +29,7 @@ exports.addCommentToPost = async (req, res) => {
         await newComment.save()
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal server error'));   
+        return res.status(500).json(error('Internal server error: cannot save new comment'));   
     }
 
     // find post
@@ -38,7 +38,7 @@ exports.addCommentToPost = async (req, res) => {
         post = await Post.findById(req.params.blogId);
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal server error'));
+        return res.status(500).json(error('Internal server error: invalid blog post ID'));
     }
 
     if (!post) {
@@ -80,7 +80,7 @@ exports.updateCommentOnPost = async (req, res) => {
         post = await Post.findById(req.params.blogId);
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal server error'));
+        return res.status(500).json(error('Internal server error: invalid blog post ID'));
     }
     
     if (!post) {
@@ -93,7 +93,7 @@ exports.updateCommentOnPost = async (req, res) => {
         existingComment = await Comment.findById(req.params.commentId);
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal Server error'));
+        return res.status(500).json(error('Internal Server error: invalid comment ID'));
     }
     
     if (!existingComment) {
@@ -128,7 +128,7 @@ exports.getAllCommentOnPost = async (req, res) => {
         post = await Post.findById(req.params.blogId).populate('comments', '-__v, -post');
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal Server error')); 
+        return res.status(500).json(error('Internal Server error: invalid blog post ID')); 
     }
     
     if (!post) {
@@ -157,7 +157,7 @@ exports.retrieveSingleComment = async (req, res) => {
         post = await Post.findById(req.params.blogId);
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal server error'));
+        return res.status(500).json(error('Internal server error: invalid blog post ID'));
     }
     
     if (!post) {
@@ -170,7 +170,7 @@ exports.retrieveSingleComment = async (req, res) => {
         comment = await Comment.findById(req.params.commentId).select('-post');
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal Server error')); 
+        return res.status(500).json(error('Internal Server error: invalid comment ID')); 
     }
     
     if (!comment) {
@@ -197,7 +197,7 @@ exports.deleteCommentOnPost = async (req, res) => {
         post = await Post.findById(req.params.blogId);
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal server error'));
+        return res.status(500).json(error('Internal server error: invalid blog post ID'));
     }
 
     if (!post) {
@@ -210,7 +210,7 @@ exports.deleteCommentOnPost = async (req, res) => {
         comment = await Comment.findById(req.params.commentId);
     } catch (err) {
         console.log(err.message);
-        return res.status(500).json(error('Internal Server error')); 
+        return res.status(500).json(error('Internal Server error: invalid comment ID')); 
     }
 
     if (!comment) {

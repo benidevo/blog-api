@@ -1,10 +1,14 @@
 # Blog API
 
-This is a simple Blog API that implements basic CRUD operations, user authentication and pagination. Only authenticated users can create, edit and delete blog posts and all users can create, edit and delete comments. This API was built with REST architecture.
+This is a simple Blog API that implements basic CRUD operations, user authentication and pagination. Only authenticated users can create, edit and delete blog posts and all users can create, edit and delete comments. This API was built using REST architecture.
 
 ## Link to Hosted API
-    - [https://myblogappapi.herokuapp.com](https://myblogappapi.herokuapp.com)
+- [https://myblogappapi.herokuapp.com/](https://myblogappapi.herokuapp.com)
 
+## Link to published documentation
+- [Poatman API Docs](https://documenter.getpostman.com/view/15138887/UUxtDVom)
+
+![Screenshot](BlogAPI.png?raw=true "Blog API")
 
 ## Technologies 
 
@@ -198,7 +202,7 @@ The endpoints and responses are described below.
 
 `POST api/blog-posts`
 
-    curl -i -H 'Accept: application/json', 'Authorization: <token: string>
+    curl -i -H 'Accept: application/json', 'Authorization: <token: string>'
 
 ### Payload
 
@@ -229,7 +233,7 @@ The endpoints and responses are described below.
 
 `PUT api/blog-posts/{blogId}`
 
-    curl -i -H 'Accept: application/json', 'Authorization: <token: string>
+    curl -i -H 'Accept: application/json', 'Authorization: <token: string>'
 
 ### Payload
 
@@ -260,7 +264,7 @@ The endpoints and responses are described below.
 
 `DELETE api/blog-posts/{blogId}`
 
-    curl -i -H 'Accept: application/json', 'Authorization: <token: string>
+    curl -i -H 'Accept: application/json', 'Authorization: <token: string>'
 
 ### Response
 

@@ -39,7 +39,7 @@ exports.createPost = async (req, res) => {
 		await post.save();
 	} catch (err) {
 		console.log(err.message);
-		return res.status(500).json(error('Internal server error'));
+		return res.status(500).json(error('Internal server error: failed to save blog post'));
 	};
 	
 	const result = post.toObject({
@@ -67,13 +67,18 @@ exports.updatePost = async (req, res) => {
 		post = await Post.findById(req.params.blogId);
 	} catch (err) {
 		console.log(err.message);
-		return res.status(500).json(error('Internal server error'));
+		return res.status(500).json(error('Internal server error: invalid blog post ID'));
 	}
 	
 	if (!post) {
 		return res.status(404).json(error('Blog post does not exist'));
 	};
 	
+	// ensure that only a post's author can update the post
+	if (post.author !== req.user.name) {
+		return res.status(403).json(error('You are not permitted to update a post you did not create'));
+	};
+
 	// update post
 	const { title, body } = req.body;
 
@@ -103,7 +108,7 @@ exports.retrievePost = async (req, res) => {
 		post = await Post.findById(req.params.blogId).populate('comments', '-__V, -post');
 	} catch (err) {
 		console.log(err.message);
-		return res.status(500).json(error('Internal server error'));
+		return res.status(500).json(error('Internal server error: invalid blog post ID'));
 	}
 	
 	if (!post) {
@@ -138,7 +143,7 @@ exports.retrieveAllPosts = async (req, res) => {
     	count = await Post.countDocuments();
 	} catch (err) {
 		console.log(err.message);
-		return res.status(500).json(error('Internal server error'));
+		return res.status(500).json(error('Internal server error: failed to retrieve blog posts'));
 	}
 
 	const result = posts.map(post => {
@@ -170,11 +175,16 @@ exports.deletePost = async (req, res) => {
 		post = await Post.findById(req.params.blogId);
 	} catch (err) {
 		console.log(err.message);
-		return res.status(500).json(error('Internal server error'));
+		return res.status(500).json(error('Internal server error: invalid blog post ID'));
 	}
 	
 	if (!post) {
 		return res.status(404).json(error('Blog post does not exist'));
+	};
+
+	// ensure that only a post's author can update the post
+	if (post.author !== req.user.name) {
+		return res.status(403).json(error('You are not permitted to delete a post you did not create'));
 	};
 
 	// delete post

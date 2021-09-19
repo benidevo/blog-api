@@ -44,7 +44,7 @@ exports.register = async (req, res) => {
             token = jwt.sign(
                 { userId: newUser.id, email: newUser.email, name: newUser.name },
                 process.env.JWT_SECRET,
-                { expiresIn: '1h' },
+                { expiresIn: '24h' },
             );
         } catch (err) {
             console.log(err.message);
@@ -106,7 +106,7 @@ exports.login = async (req, res) => {
         token = jwt.sign(
             { userId: user._id, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: '2h' },
+            { expiresIn: '24h' },
         );
     } catch (err) {
         return res.status(500).json('Internal Server error');

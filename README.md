@@ -6,7 +6,7 @@ This is a simple Blog API that implements basic CRUD operations, user authentica
 - [https://myblogappapi.herokuapp.com/](https://myblogappapi.herokuapp.com)
 
 ## Link to published documentation
-- [Poatman API Docs](https://documenter.getpostman.com/view/15138887/UUxtDVom)
+- [Postman API Docs](https://documenter.getpostman.com/view/15138887/UUxtDVom)
 
 ![Screenshot](BlogAPI.png?raw=true "Blog API")
 
@@ -19,6 +19,8 @@ The following technologies were used in this project:
 - [Express.js](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/cloud/atlas)
 - [JWT](https://jwt.io)
+- [Heroku](http://heroku.com/)
+
 
 ## Requirements
 
